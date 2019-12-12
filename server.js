@@ -4,6 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const express = require("express");
 
+// var data = fs.readFileSync("db.json");
+// var db = JSON.parse(data);
+// console.log(db);
+
 const app = express();
 
 //Sets an initial port.
@@ -28,18 +32,22 @@ app.get("/", (req, res) => {
 
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "Develop", "public", "notes.html"));
-    console.log("your index");
+    console.log("your on note taker page");
 });
 
-// app.get("/notes", (req, res) => {
-//     res.sendFile(path.join(__dirname, "public\notes.html"));
-//      console.log("/notes");
+// app.get("/api/notes", (req, res) => {
+//     res.sendFile(path.join(__dirname, "db", "db.json"));
+//      console.log("db");
 // });
 
-// app.get("/db", (req, res) => {
-//     res.json("notesArray");
-// });
+// app.post("/api/notes", (req, res) => {
+//     var newNotes = req.body;
 
+// })
+
+// app.delete("api/notes/",(req, res) => {
+
+// })
 // app.get("*", (req, res) => {
 //     res.sendFile(path.join(__dirname, "public\index.html"));
 //     console.log("your index");
