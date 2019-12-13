@@ -2,12 +2,16 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
-
-// var data = fs.readFileSync("db.json");
-// var db = JSON.parse(data);
-// console.log(db);
-
+const bodyParser = require("body-parser");
 const app = express();
+
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+var newNotes = fs.readFileSync("db.json");
+var db = JSON.parse(newNotes);
+console.log(db);
+
+
 
 //Sets an initial port.
 const PORT = process.env.PORT || 8000;
@@ -16,6 +20,8 @@ const PORT = process.env.PORT || 8000;
 //Sets up initial app to handle data parsing
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+
+// app.use(bodyParser.json());
 
 //displays homepage
 app.get("/", (req, res) => {
@@ -30,20 +36,29 @@ app.get("/notes", (req, res) => {
 
 //api route getting all the notes as json in the database
 app.get("/api/notes", (req, res) => {
-    // res.sendFile(path.join(__dirname, "db", "db.json"));
-    //  console.log("db");
+    
+    res.sendFile(path.join(__dirname, "db", "db.json"));
+    console.log("you're in db");
+
 });
 
-//saving the notes to the database
-app.post("/api/notes", (req, res) => {
-    var newNotes = req.body;
 
-})
+//saving the notes to the database
+//not sure if this will work
+app.post("/api/notes", urlencodedParser,(req, res) => {
+    console.log(req.body);
+    const newNotes = req.body;
+  res.json( newNotes);
+    fs.writeFile(path.join(__dirname, "public", "notes.html"))
+});
+
 
 //deleting notes from the database
-app.delete("api/notes/",(req, res) => {
+app.delete("api/notes/:id",(req, res) => {
+    res.send('DELETE NOTES!')
+    
+});
 
-})
 
 // app.get("*", (req, res) => {
 
@@ -57,3 +72,4 @@ app.listen(PORT, () => {
 //to do:
 //delete route needs to be able to pass an id into it; look at last weeks notes about creating id route parameters
 //need to create new route for serving static files for css and index.js
+//
