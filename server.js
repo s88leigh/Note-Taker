@@ -8,7 +8,7 @@ const app = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 var newNotes = fs.readFileSync("db.json");
-var db = JSON.parse(newNotes);
+var data = JSON.parse(newNotes);
 console.log(db);
 
 
@@ -37,22 +37,22 @@ app.get("/notes", (req, res) => {
 });
 
 //api route getting all the notes as json in the database
-app.get("/api/notes", (req, res) => {
+// app.get("/api/notes", (req, res) => {
     
-    res.sendFile(path.join(__dirname, "db", "db.json"));
-    console.log("you're in db");
+//     res.sendFile(path.join(__dirname, "db", "db.json"));
+//     console.log("you're in db");
 
-});
+// });
 
 
 //saving the notes to the database
-//not sure if this will work
-app.post("/api/notes", urlencodedParser,(req, res) => {
-    console.log(req.body);
-    const newNotes = req.body;
-  res.json( newNotes);
-    fs.writeFile(path.join(__dirname, "public", "notes.html"))
-});
+// not sure if this will work
+// app.post("/api/notes", urlencodedParser,(req, res) => {
+//     console.log(req.body);
+//     const newNotes = req.body;
+//   res.json( newNotes);
+//     fs.writeFile(path.join(__dirname, "public", "notes.html"))
+// });
 
 
 //deleting notes from the database
@@ -62,9 +62,9 @@ app.delete("api/notes/:id",(req, res) => {
 });
 
 
-// app.get("*", (req, res) => {
-
-// });
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 //Listener will start our server
 app.listen(PORT, () => {
@@ -73,5 +73,5 @@ app.listen(PORT, () => {
 
 //to do:
 //delete route needs to be able to pass an id into it; look at last weeks notes about creating id route parameters
-//need to create new route for serving static files for css and index.js
-//
+
+//progress:  index, notes pages displays with css.  Delete
