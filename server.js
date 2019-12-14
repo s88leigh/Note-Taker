@@ -2,27 +2,18 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
-const bodyParser = require("body-parser");
+
 const app = express();
-
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
-var newNotes = fs.readFileSync("db.json");
-var data = JSON.parse(newNotes);
-console.log(db);
-
-
 
 //Sets an initial port.
 const PORT = process.env.PORT || 8000;
-
 
 //Sets up initial app to handle data parsing
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-app.use(bodyParser.json());
 
+//links to css in the public folder
 app.use(express.static(path.join(__dirname, "public")));
 
 //displays homepage
@@ -36,35 +27,66 @@ app.get("/notes", (req, res) => {
     console.log("your on note taker page");
 });
 
+
 //api route getting all the notes as json in the database
-// app.get("/api/notes", (req, res) => {
-    
-//     res.sendFile(path.join(__dirname, "db", "db.json"));
-//     console.log("you're in db");
 
-// });
+app.get("/api/notes", (err, res) => {
+    let newNotes; 
+    try {
+        newNotes=fs.readFileSync("db/db.json", "utf8");
+        newNotes = JSON.parse(newNotes);
+        console.log(newNotes);
+     
+    }
+    catch (err){
+        console.log("\n error(in app.get.catch):");
+        console.error(err);
+    }
+    res.json(newNotes);
 
+});
+
+let newNotes = [];
 
 //saving the notes to the database
-// not sure if this will work
-// app.post("/api/notes", urlencodedParser,(req, res) => {
-//     console.log(req.body);
-//     const newNotes = req.body;
-//   res.json( newNotes);
-//     fs.writeFile(path.join(__dirname, "public", "notes.html"))
-// });
+app.post("/api/notes", (req, res) => {
+ 
+    try {
 
+        newNotes =fs.readFileSync("db/db.json", "utf8");
+
+        newNotes =JSON.parse(newNotes);
+       //adds notes to the body
+        newNotes.push(req.body)
+
+        newNotes = JSON.stringify(newNotes);
+        //Json turns parsed notes into a string for user
+        fs.writeFile("db/db.json", newNotes, "utf8", function(err) {
+            if (err) throw err;
+        });
+
+        console.log(newNotes);
+     
+    }
+    catch (err){
+        console.log("\n error(in app.post.catch):");
+        console.error(err);
+    }
+    res.json(JSON.parse(newNotes));
+
+});
+    
+
+//   res.sendFile(path.join(__dirname, "public", "notes.html"));
+   
 
 //deleting notes from the database
 app.delete("api/notes/:id",(req, res) => {
-    res.send('DELETE NOTES!')
-    
+  
+    myArray.forEach(function(item){ delete item.id });
+    res.send('DELETE NOTES!');
 });
 
-
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
 
 //Listener will start our server
 app.listen(PORT, () => {
@@ -73,5 +95,7 @@ app.listen(PORT, () => {
 
 //to do:
 //delete route needs to be able to pass an id into it; look at last weeks notes about creating id route parameters
+//connect to db.json file
+//write code to push new notes to db
 
-//progress:  index, notes pages displays with css.  Delete
+//progress:  index, notes pages displays with css.  
